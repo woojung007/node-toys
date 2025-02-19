@@ -1,0 +1,28 @@
+{
+  "name": "server-test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "iconv-lite": "^0.6.3",
+    "pg": "^8.13.3",
+    "proj4": "^2.15.0",
+    "shapefile": "^0.6.6"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.5.7",
+    "@types/node": "^22.13.4",
+    "@types/shapefile": "^0.6.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

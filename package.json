@@ -19,7 +19,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "process": "node process.js",
+    "count": "node count.js"
   },
   "keywords": [],
   "author": "",

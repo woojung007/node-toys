@@ -6,12 +6,11 @@ import proj4 from "proj4";
 import * as shapefile from "shapefile";
 import { fileURLToPath } from "url";
 
-// EPSG:5186(UTM-K) → EPSG:4326(WGS84) 좌표 변환 설정
+// EPSG:5186 정의
 proj4.defs(
   "EPSG:5186",
-  "+proj=tmerc +lat_0=38 +lon_0=128 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +units=m +no_defs"
+  "+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs"
 );
-proj4.defs("EPSG:4326", "+proj=longlat +datum=WGS84 +no_defs");
 
 function unzip(zipPath) {
   try {
@@ -119,18 +118,19 @@ async function readShpFiles(unzippedPath) {
     }
 
     const shpPath = path.join(unzippedPath, shpFile);
-    const prjPath = path.join(unzippedPath, prjFile);
+    // const prjPath = path.join(unzippedPath, prjFile);
 
     const features = await convertShpProjection(shpPath);
-    console.log("shp 파일을 읽어왔습니다.");
+    console.log("shp 파일을 읽어왔습니다.", features.length);
 
-    const projection = fs.readFileSync(prjPath, "utf8").trim();
-    console.log("prj 파일을 읽어왔습니다.");
+    // ! prj 파일 읽어오기
+    // const projection = fs.readFileSync(prjPath, 'utf8').trim();
+    // console.log('prj 파일을 읽어왔습니다.');
 
     return {
       type: "FeatureCollection",
       features: features,
-      projection: projection,
+      // projection: projection,
     };
   } catch (error) {
     console.error("shp 파일 읽기 실패:", error);
@@ -161,7 +161,7 @@ function saveIntoJson(zipFileName, featureCollection) {
     console.log("JSON 파일이 저장되었습니다.");
     return true;
   } catch (error) {
-    console.error("json 파일 저장 실패:", error);
+    console.error("JSON 파일 저장 실패:", error);
     return false;
   }
 }
@@ -174,10 +174,11 @@ async function unzipShpAndSaveToJson(zipPath) {
   const result = unzip(zipPath);
   if (result) {
     const featureCollection = await readShpFiles(result.unzippedPath);
+
+    // ! JSON 파일 생성
     if (featureCollection) {
       const success = saveIntoJson(result.zipFileName, featureCollection);
       if (success) {
-        console.log("모든 작업이 완료되었습니다!");
       }
     }
   }
@@ -192,11 +193,13 @@ export async function processAllZipFiles() {
     .readdirSync(zipDir)
     .filter((file) => file.endsWith(".zip"));
 
+  // ! 모든 zip 파일 처리
   for (const zipFile of zipFiles) {
     const zipPath = path.join(zipDir, zipFile);
     await unzipShpAndSaveToJson(zipPath);
   }
 
+  // ! 특정 zip 파일 처리
   // const zipPath = path.join(zipDir, zipFiles[1]);
   // await unzipShpAndSaveToJson(zipPath);
   console.log("🎉 모든 ZIP 파일 처리 완료!");
